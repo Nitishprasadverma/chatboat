@@ -27,17 +27,111 @@ body{
 
 }
 
+.header :where(.title,.subtitle){
+    font-weight: 500;
+    line-height: 3.6rem;
+}
+
 .header .title{
     font-size: 2.7rem;
     background-color: text;
     background: linear-gradient(to right, #4285fa,#d96570);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    width: fit-content;
 }
 
 .header{
     margin-top: 7vh;
     padding: 1rem;
-    
 }
 
+.header .subtitle{
+    font-size: 2.4rem;
+}
+
+.Suggestion-list{
+    margin-top: 9.5vh;
+    list-style: none;
+    list-style: none;
+    display: flex;
+    overflow-x: auto;
+    scrollbar-width: none;
+    gap: 3rem;
+}
+
+.Suggestion-list .Suggestion{
+
+    padding: 1.25rem;
+    cursor: pointer;
+    width: 227px;
+    flex-shrink: 0;
+    border-radius: 0.75rem;
+    background: var(--secondary-color);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: space-between;
+}
+
+.Suggestion-list .Suggestion:hover{
+    background: var(--secondary-hover-color);
+}
+
+.Suggestion-list .Suggestion .text{
+    font-weight: 400;
+
+}
+.Suggestion-list .Suggestion .icon{
+    background: var(--primary-color);
+    height: 42px;
+    width: 42px;
+    margin-top: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    
+
+}
+
+.typing-area{
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+}
+
+.typing-area .typing-input{
+    width: 100%;
+    height: 100%;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+    border-radius: 6.2rem;
+    padding: 1.1rem 4rem 1.1rem 1.5rem;
+color: var(--text-color);
+    background: var(--secondary-color);
+}
+
+.typing-area .input-wrapper{
+    height: 56px;
+    width: 100%;
+    display: flex;
+}
+
+.typing-area:where(.typing-form, .action-button){
+display: flex;
+gap: 0.8rem;
+border: none;
+
+}
+
+.typing-area .icon{
+    background: var(--primary-color);
+    height: 56px;
+    width: 56px;
+    display: flex;
+    align-items: center;
+    border-radius: 50%;
+
+}
