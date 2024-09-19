@@ -57,11 +57,15 @@ body{
 }
 
 .header{
-    display: none;
-    /* margin-top: 7vh; */
+   
+    margin-top: 7vh;
     padding: 1rem;
 }
 
+body.hide-header .header{
+    display: none;
+    margin-top: 0;
+}
 .header .subtitle{
     font-size: 2.4rem;
     color: var(--subheading-color);
@@ -257,7 +261,7 @@ align-items: center;
     background: var(--secondary-color);
 }
 
-.chat-list .message:not(.loading):hover .icon{
+.chat-list .message:not(.loading):hover .icon:not(.hide){
     visibility: visible;
 }
 
@@ -285,6 +289,7 @@ align-items: center;
     width: 100%;
     gap: 0.8rem;
     flex-direction: column;
+    scrollbar-color: #999 transparent;
 }
 
 .chat-list .message.loading .loading-indicator{

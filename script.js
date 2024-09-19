@@ -1,9 +1,16 @@
 const typingForm = document.querySelector(".typing-form");
 const chatlist = document.querySelector(".chat-list");
 const toggleThemeButton = document.querySelector("#themeButton");
+const deleteBtn = document.querySelector("#delete-chat-btn");
 let userMessage = null;
 const API_KEY = "AIzaSyCL_mOpcCkGar9s4QBgFi2dF3Rms9LA5vg";
 const API_URL = ` https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`
+
+
+// const scroll = new LocomotiveScroll({
+//     el: document.querySelector("chatlist"),
+//     smooth: true
+// });
 
 //create a new message element and return it
 const createMessageElement = (content, ...classes) => {
@@ -14,17 +21,22 @@ const createMessageElement = (content, ...classes) => {
 }
 
 // show typing effect by displaying words one by one
-const showTypingEffect = (text, textElment) => {
+const showTypingEffect = (text, textElment, incomingMessageDiv) => {
     const words = text.split(' ');
     let currentWordIndex = 0;
     //append each word to the text element with a space;]
     const typingInterval = setInterval(() => {
         textElment.innerText += (currentWordIndex === 0 ? '' : ' ') + words[currentWordIndex++];
-
+        incomingMessageDiv.querySelector(".icon").classList.add("hide");
         //if all words are displayed
         if (currentWordIndex === words.length) {
             clearInterval(typingInterval);
+            incomingMessageDiv.querySelector(".icon").classList.remove("hide");
+            localStorage.setItem("savedChats", chatlist.innerHTML); //saves chats to the local storage
+
+           
         }
+        chatlist.scrollTo(0, chatlist.scrollHeight)
     }, 80)
 }
 
@@ -48,8 +60,8 @@ const generateAPIResponse = async (incomingMessageDiv) => {
         console.log(data);
 
         //get the api response text
-        const apiReponse = data?.candidates[0].content.parts[0].text;
-        showTypingEffect(apiReponse, textElment)
+        const apiReponse = data?.candidates[0].content.parts[0].text.replace(/\*\*(.*?)\*\*/g, '$1');
+        showTypingEffect(apiReponse, textElment,incomingMessageDiv)
         console.log(apiReponse);
         // textElment.innerText = apiReponse; 
 
@@ -80,6 +92,7 @@ const showLoadingAnimation = () => {
     const incomingMessageDiv = createMessageElement(html, "incoming", "loading");
 
     chatlist.appendChild(incomingMessageDiv);
+    chatlist.scrollTo(0, chatlist.scrollHeight)
     generateAPIResponse(incomingMessageDiv);
 }
 
@@ -111,8 +124,13 @@ const handleOutgoingChat = () => {
 
     outgoingMessageDiv.querySelector(".text").innerText = userMessage;
     chatlist.appendChild(outgoingMessageDiv);
+    chatlist.scrollTo(0, chatlist.scrollHeight)
 
+    document.body.classList.add("hide-header")
     typingForm.reset() //clear input field
+
+    // setTimeout(showLoadingAnimation,500);
+    
 }
 
 //light mode toggle
@@ -124,14 +142,30 @@ toggleThemeButton.addEventListener("click" ,() =>{
 })
 
 const loadLocalStorageData = () =>{
+    const  savedChats = localStorage.getItem("savedChats");
+
     const isLightMode = (localStorage.getItem("themecolor") === "light_mode");
 
     //applying the stored theme color
     document.body.classList.toggle("light_mode" , isLightMode)
 
     toggleThemeButton.innerText = isLightMode ? "dark_mode" : "light_mode"
+
+    chatlist.innerHTML = savedChats || "" ;
+
+    document.body.classList.toggle("hide-header",savedChats)
+    chatlist.scrollTo(0, chatlist.scrollHeight)
 }
 loadLocalStorageData();
+
+//delete chat btn 
+
+deleteBtn.addEventListener("click", () =>{
+    if(confirm("Are you sure want to delete all chat?")){
+        localStorage.removeItem("savedChats");
+        loadLocalStorageData();
+    }
+})
 typingForm.addEventListener("submit", (e) => {
     e.preventDefault();
 
