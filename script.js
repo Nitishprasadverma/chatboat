@@ -2,6 +2,10 @@ const typingForm = document.querySelector(".typing-form");
 const chatlist = document.querySelector(".chat-list");
 const toggleThemeButton = document.querySelector("#themeButton");
 const deleteBtn = document.querySelector("#delete-chat-btn");
+const suggenstions = document.querySelectorAll(".Suggestion-list .Suggestion");
+
+console.log(suggenstions);
+
 let userMessage = null;
 const API_KEY = "AIzaSyCL_mOpcCkGar9s4QBgFi2dF3Rms9LA5vg";
 const API_URL = ` https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`
@@ -11,6 +15,8 @@ const API_URL = ` https://generativelanguage.googleapis.com/v1beta/models/gemini
 //     el: document.querySelector("chatlist"),
 //     smooth: true
 // });
+
+
 
 //create a new message element and return it
 const createMessageElement = (content, ...classes) => {
@@ -62,7 +68,7 @@ const generateAPIResponse = async (incomingMessageDiv) => {
         //get the api response text
         const apiReponse = data?.candidates[0].content.parts[0].text.replace(/\*\*(.*?)\*\*/g, '$1');
         showTypingEffect(apiReponse, textElment,incomingMessageDiv)
-        console.log(apiReponse);
+       
         // textElment.innerText = apiReponse; 
 
     }
@@ -108,7 +114,7 @@ const copyMessage =(copyIcon) =>{
 
 //handling sending outgoing chat messages
 const handleOutgoingChat = () => {
-    userMessage = typingForm.querySelector(".typing-input").value.trim()
+    userMessage = typingForm.querySelector(".typing-input").value.trim() || userMessage
 
     if (!userMessage) return
     console.log(userMessage);
@@ -165,6 +171,15 @@ deleteBtn.addEventListener("click", () =>{
         localStorage.removeItem("savedChats");
         loadLocalStorageData();
     }
+})
+console.log(suggenstions);
+suggenstions.forEach(suggestion =>{
+    suggestion.addEventListener("click", () =>{
+        console.log("hello");
+        userMessage = suggestion.querySelector(".text").innerText;
+        console.log(userMessage);
+        handleOutgoingChat();
+    })
 })
 typingForm.addEventListener("submit", (e) => {
     e.preventDefault();
