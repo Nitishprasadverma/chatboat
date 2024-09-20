@@ -220,6 +220,10 @@ border-radius: 50%;
 align-self: flex-start;
 }
 
+.chat-list .message .text.error {
+    color: red;
+}
+
 .chat-list .message.loading .avtar{
     animation: rotate 3s linear infinite;
 }

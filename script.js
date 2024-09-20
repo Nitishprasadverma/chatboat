@@ -7,6 +7,7 @@ const suggenstions = document.querySelectorAll(".Suggestion-list .Suggestion");
 console.log(suggenstions);
 
 let userMessage = null;
+let isResponding = false;
 const API_KEY = "AIzaSyCL_mOpcCkGar9s4QBgFi2dF3Rms9LA5vg";
 const API_URL = ` https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`
 
@@ -37,6 +38,7 @@ const showTypingEffect = (text, textElment, incomingMessageDiv) => {
         //if all words are displayed
         if (currentWordIndex === words.length) {
             clearInterval(typingInterval);
+            isResponding = false
             incomingMessageDiv.querySelector(".icon").classList.remove("hide");
             localStorage.setItem("savedChats", chatlist.innerHTML); //saves chats to the local storage
 
@@ -63,7 +65,7 @@ const generateAPIResponse = async (incomingMessageDiv) => {
             })
         });
         const data = await response.json();
-        console.log(data);
+     if(!response.ok) throw new Error(data.error.message)
 
         //get the api response text
         const apiReponse = data?.candidates[0].content.parts[0].text.replace(/\*\*(.*?)\*\*/g, '$1');
@@ -73,6 +75,9 @@ const generateAPIResponse = async (incomingMessageDiv) => {
 
     }
     catch (error) {
+        isResponding = false;
+        textElment.innerText = error.message;
+        textElment.classList.add("error")
         console.log(error);
     }
 
@@ -116,8 +121,9 @@ const copyMessage =(copyIcon) =>{
 const handleOutgoingChat = () => {
     userMessage = typingForm.querySelector(".typing-input").value.trim() || userMessage
 
-    if (!userMessage) return
-    console.log(userMessage);
+    if (!userMessage || isResponding) return
+   
+    isResponding = true;
     const html = ` <div class="message-content">
 
                 <img src="./pngtree-cartoon-color-simple-male-avatar-png-image_5230557.jpg" alt="USER-PNG" class="avtar">
@@ -172,10 +178,10 @@ deleteBtn.addEventListener("click", () =>{
         loadLocalStorageData();
     }
 })
-console.log(suggenstions);
-suggenstions.forEach(suggestion =>{
+// console.log(suggenstions);
+suggenstions.forEach(suggestion => {
     suggestion.addEventListener("click", () =>{
-        console.log("hello");
+        console.log(suggestion);
         userMessage = suggestion.querySelector(".text").innerText;
         console.log(userMessage);
         handleOutgoingChat();
